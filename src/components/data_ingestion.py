@@ -2,13 +2,14 @@ import os
 import sys
 
 from sklearn.model_selection import train_test_split
-# Remove incorrect paths
-if '/Users/ronitsaini/KrishNiakCourse/ml_project1/src/components' in sys.path:
-    sys.path.remove('/Users/ronitsaini/KrishNiakCourse/ml_project1/src/components')
+
 from src.exception import CustomException
 from src.logger import logging
 import pandas as pd
 from dataclasses import dataclass
+
+from src.components.data_transformation import DataTransformation
+from src.components.data_transformation import DataTransformationConfig
 
 @dataclass
 class DataIngestionConfig:
@@ -42,8 +43,11 @@ class DataIngestion:
                 self.ingestion_config.test_data_path
             )
         except Exception as e:
-            return CustomException(e,sys)
+            raise CustomException(e,sys)
         
 if __name__=='__main__':
     obj=DataIngestion()
-    obj.initiate_data_ingestion()
+    train_data,test_data=obj.initiate_data_ingestion()
+
+    data_transformation_obj=DataTransformation()
+    data_transformation_obj.init_data_tranformation(train_data, test_data)
